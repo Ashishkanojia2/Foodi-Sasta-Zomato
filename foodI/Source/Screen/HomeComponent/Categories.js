@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     width: WindowWidth - 20,
     borderRadius: 10,
     alignItems: 'center',
+    marginHorizontal: 10,
   },
   CatText: {fontSize: 20, color: '#000', textDecorationLine: 'underline'},
   CatItemText: {fontSize: 20, color: '#000'},

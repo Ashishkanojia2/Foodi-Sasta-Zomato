@@ -32,6 +32,7 @@ const Signup = ({navigation}) => {
             <TextInput
               style={styles.txtInputone}
               placeholder="UserName/EmailId"
+              placeholderTextColor={'#b5b4b5'}
               onFocus={() => {
                 setemailFocus(!emailFocus);
                 setPasswordfocus(false);
@@ -50,6 +51,7 @@ const Signup = ({navigation}) => {
             <TextInput
               style={styles.txtInputone}
               placeholder="Password"
+              placeholderTextColor={'#b5b4b5'}
               secureTextEntry={viewPass == true ? false : true}
               onFocus={() => {
                 setemailFocus(false);
@@ -60,7 +62,7 @@ const Signup = ({navigation}) => {
             <FontAwesome
               name={viewPass == true ? 'eye' : 'eye-slash'}
               size={25}
-              style={{position: 'absolute', right: 10}}
+              style={{position: 'absolute', right: 10, color: '#999798'}}
               onPress={() => {
                 setviewPass(!viewPass);
               }}
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1.5,
     // marginTop: 10,
     paddingLeft: 10,
-    // color: '#000',
+    color: '#000',
     // fontSize: 18,
     // elevation: 30,
   },
