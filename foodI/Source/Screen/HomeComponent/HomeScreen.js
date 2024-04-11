@@ -6,6 +6,8 @@ import {
   TextInput,
   ScrollView,
   RefreshControl,
+  FlatList,
+  Dimensions,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Header from './Header';
@@ -16,6 +18,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import firestore from '@react-native-firebase/firestore';
 import FoodCard from './FoodCard';
 import SearchfoodBar from './SearchfoodBar';
+
+const windowHeight = Dimensions.get('screen').height;
+const windowWidth = Dimensions.get('screen').width;
 
 const HomeScreen = () => {
   //HERE WE ARE RECIVED ALL THE DATA FROM THE  FIRESTORE DATABASE
@@ -89,6 +94,30 @@ const HomeScreen = () => {
           }}
         />
       </View>
+      {SearchValueItem != '' && (
+        <View style={styles.searchresultArea}>
+          <FlatList
+            style={styles.searchResultInnner}
+            data={fireStoreDataRecived}
+            renderItem={({item}) => {
+              if (
+                item.food_Name
+                  .toLowerCase()
+                  .includes(SearchValueItem.toLocaleLowerCase())
+              ) {
+                return (
+                  <View>
+                    <Text
+                      style={{fontSize: 20, paddingLeft: 20, color: '#000'}}>
+                      -- {item.food_Name}
+                    </Text>
+                  </View>
+                );
+              }
+            }}
+          />
+        </View>
+      )}
       {/* <SearchfoodBar data={fireStoreDataRecived} value={SearchValueItem} /> */}
       <Categories />
       <OfferSlider />
@@ -119,5 +148,15 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     width: '90%',
     color: '#000',
+  },
+  searchresultArea: {
+    height: windowHeight / 5,
+    width: '100%',
+    // backgroundColor: 'brown',
+  },
+  searchResultInnner: {
+    height: '20%',
+    width: windowWidth,
+    // backgroundColor: 'gray',
   },
 });
