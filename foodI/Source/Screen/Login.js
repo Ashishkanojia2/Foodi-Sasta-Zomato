@@ -9,13 +9,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
 import auth from '@react-native-firebase/auth';
 import UserLogin from './UserLogin';
 import Navigation from '../Nav/Navigation';
+import firestore from '@react-native-firebase/firestore';
 const windowHeight = Dimensions.get('screen').height;
 const windowWidth = Dimensions.get('screen').width;
 
@@ -33,6 +34,11 @@ const Login = ({navigation}) => {
   //showing Loader when user Login
   const [showLoader, setshowLoader] = useState(false);
 
+  const [ErrorMessage, setErrorMessage] = useState('');
+
+  //STORE USER UNIQUE ID
+  const [UserUid, setUserUid] = useState('');
+
   // Collection User LoginData
   const [CollectionData, setCollectionData] = useState({
     fullName: '',
@@ -43,14 +49,16 @@ const Login = ({navigation}) => {
     address: '',
   });
 
+  useEffect(() => {
+    console.log('Ye Store hai UserUid - :', UserUid);
+  }, [UserUid]);
+
   // setTimeout(() => {
   //   if (setshowLoader == true) {
   //     setshowLoader(false);
   //   }
   // }, 2000);
   const BtnPress = () => {
-    navigation.navigate('UserLogin');
-
     // console.log('Kya aaya!', CollectionData, 'aaya');
     // setCollectionData({
     //   ...CollectionData,
@@ -65,54 +73,76 @@ const Login = ({navigation}) => {
 
     // LoginSucessFully Page Design will be complete then remove Comment from Here
 
-    // if (
-    //   (CollectionData.fullName =
-    //     '' ||
-    //     CollectionData.emailId == '' ||
-    //     CollectionData.phoneNo == '' ||
-    //     CollectionData.password == '' ||
-    //     CollectionData.Cpassword == '' ||
-    //     CollectionData.address == '')
-    // ) {
-    //   console.log('Blank Box Not alloewed');
-    //   Alert.alert('Something Wents Wrong');
-    //   return;
-    // } else if (CollectionData.password !== CollectionData.Cpassword) {
-    //   console.log("Password Doesn't match");
-    //   Alert.alert("Password Doesn't match");
-    //   return;
-    // } else if (CollectionData.phoneNo.length != 10) {
-    //   Alert.alert('Check Your Phone Number');
-    //   return;
-    // }
-    // try {
-    //   auth()
-    //     .createUserWithEmailAndPassword(
-    //       CollectionData.emailId,
-    //       CollectionData.password,
-    //     )
-    //     .then(data => {
-    //       console.log(
-    //         'User sucessfully Login',
-    //         data.additionalUserInfo.isNewUser,
-    //       );
-    //       {
-    //         data.additionalUserInfo.isNewUser != '' || false
-    //           ? setshowLoader(true)
-    //           : setshowLoader(false);
-    //         setTimeout(() => {
-    //           setshowLoader(false);
-    //           navigation.navigate('UserLogin');
-    //         }, 2000);
-    //       }
-    //     })
-    //     .catch(error => {
-    //       console.log('Here is the Error', error);
-    //     });
-    //   //this Error is Recinving From Our Code Error .. Both are different Catch
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    if (
+      CollectionData.fullName == '' ||
+      CollectionData.emailId == '' ||
+      CollectionData.phoneNo == '' ||
+      CollectionData.password == '' ||
+      CollectionData.Cpassword == '' ||
+      CollectionData.address == ''
+    ) {
+      console.log('Blank Box Not alloewed');
+      // Alert.alert('Something Wents Wrong');
+      setErrorMessage('Empty field !');
+      return;
+    } else if (CollectionData.password !== CollectionData.Cpassword) {
+      console.log("Password Doesn't match");
+      // Alert.alert("Password Doesn't match");
+      setErrorMessage("Password Doesn't Match");
+
+      return;
+    } else if (CollectionData.phoneNo.length != 10) {
+      setErrorMessage('Check your Phone No.');
+      // Alert.alert('Check Your Phone Number');
+      return;
+    }
+    try {
+      auth()
+        .createUserWithEmailAndPassword(
+          CollectionData.emailId,
+          CollectionData.password,
+        )
+        .then(data => {
+          let userid = data.user.uid; // Store the UserUid in a variable
+          setUserUid(userid);
+          // setUserUid(data.user.uid);
+          console.log('User sucessfully Login', data.user.uid);
+          const datastore = firestore().collection('UserData'); // Collection Created
+          const ColData = {...CollectionData, Uid: userid};
+          datastore.add(ColData);
+
+          {
+            data.additionalUserInfo.isNewUser != '' || false
+              ? setshowLoader(true)
+              : setshowLoader(false);
+            setTimeout(() => {
+              setshowLoader(false);
+              navigation.navigate('UserLogin');
+            }, 2000);
+          }
+        })
+        .catch(error => {
+          console.log('Here is the Error', error.message);
+          const errorMessage = error.message;
+
+          if (
+            errorMessage ===
+            '[auth/invalid-email] The email address is badly formatted.'
+          ) {
+            setErrorMessage('Invalid Email-Id');
+            console.log('Invalid Email-Id');
+          } else if (
+            errorMessage ===
+            '[auth/weak-password] The given password is invalid. [ Password should be at least 6 characters ]'
+          ) {
+            console.log('Password Should be atleast 6-digit');
+            setErrorMessage('Password Should be atleast 6-digit');
+          }
+        });
+      //this Error is Recinving From Our Code Error .. Both are different Catch
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <View style={{flex: 1}}>
@@ -125,6 +155,9 @@ const Login = ({navigation}) => {
           />
 
           <Text style={styles.heading}>Login</Text>
+          {ErrorMessage !== '' && (
+            <Text style={styles.ErrorMessage}>{ErrorMessage}</Text>
+          )}
 
           <View style={styles.inputTextView}>
             <FontAwesome
@@ -143,6 +176,7 @@ const Login = ({navigation}) => {
                 setConfirmPass(false);
                 setAddressFocus(false);
                 setPhonenumberFocus(false);
+                setErrorMessage('');
               }}
               value={CollectionData.fullName}
               onChangeText={value =>
@@ -168,6 +202,7 @@ const Login = ({navigation}) => {
                 setConfirmPass(false);
                 setAddressFocus(false);
                 setPhonenumberFocus(false);
+                setErrorMessage('');
               }}
               value={CollectionData.emailId}
               onChangeText={value =>
@@ -195,6 +230,7 @@ const Login = ({navigation}) => {
                 setConfirmPass(false);
                 setAddressFocus(false);
                 setPhonenumberFocus(!PhonenumberFocus);
+                setErrorMessage('');
               }}
               value={CollectionData.phoneNo}
               onChangeText={value =>
@@ -222,6 +258,7 @@ const Login = ({navigation}) => {
                 setConfirmPass(false);
                 setAddressFocus(false);
                 setPhonenumberFocus(false);
+                setErrorMessage('');
               }}
               value={CollectionData.password}
               onChangeText={value =>
@@ -257,6 +294,7 @@ const Login = ({navigation}) => {
                 setConfirmPass(!false);
                 setAddressFocus(false);
                 setPhonenumberFocus(false);
+                setErrorMessage('');
               }}
               value={CollectionData.Cpassword}
               onChangeText={value =>
@@ -290,6 +328,7 @@ const Login = ({navigation}) => {
                 setConfirmPass(false);
                 setAddressFocus(!AddressFocus);
                 setPhonenumberFocus(false);
+                setErrorMessage('');
               }}
               value={CollectionData.address}
               onChangeText={value =>
@@ -382,5 +421,9 @@ const styles = StyleSheet.create({
     elevation: 30,
     alignItems: 'center',
     // color: '#000',
+  },
+  ErrorMessage: {
+    color: 'red',
+    fontSize: 15,
   },
 });

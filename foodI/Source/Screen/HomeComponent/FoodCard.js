@@ -4,6 +4,7 @@ import {
   Image,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React from 'react';
@@ -11,7 +12,13 @@ import React from 'react';
 const windowHeight = Dimensions.get('screen').height;
 const windowwidth = Dimensions.get('screen').width;
 
-const FoodCard = ({title, data}) => {
+const FoodCard = ({title, data, navigation}) => {
+  const FoodDataRecived = item => {
+    console.log({navigation});
+    // console.log(item);
+    navigation.navigate('SingleFoodDetl', (foodDetail = {item}));
+  };
+
   return (
     <View style={styles.MainContainer}>
       <Text style={styles.Heading}>{title}</Text>
@@ -21,10 +28,18 @@ const FoodCard = ({title, data}) => {
         data={data}
         renderItem={({item}) => (
           <View style={styles.FoodContainer}>
-            <Image
-              source={{uri: item.food_imageUrl}}
-              style={styles.ImgeContainer}
-            />
+            <TouchableOpacity
+              style={styles.ImgeCoverContainer}
+              key={item.index}
+              onPress={() => {
+                FoodDataRecived(item);
+              }}>
+              <Image
+                source={{uri: item.food_imageUrl}}
+                style={styles.ImgeContainer}
+              />
+            </TouchableOpacity>
+
             <Text
               style={{
                 color: '#000',
@@ -106,10 +121,18 @@ const styles = StyleSheet.create({
     right: 10,
   },
   ImgeContainer: {
-    height: '60%',
+    height: '100%',
     width: '100%',
     borderRadius: 10,
     resizeMode: 'cover',
+    // backgroundColor: '#000',
+  },
+  ImgeCoverContainer: {
+    height: '60%',
+    width: '100%',
+    // borderRadius: 10,
+    // resizeMode: 'cover',
+    // backgroundColor: '#000',
   },
   foodDetails: {
     flexDirection: 'row',

@@ -22,7 +22,7 @@ import SearchfoodBar from './SearchfoodBar';
 const windowHeight = Dimensions.get('screen').height;
 const windowWidth = Dimensions.get('screen').width;
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   //HERE WE ARE RECIVED ALL THE DATA FROM THE  FIRESTORE DATABASE
   const [fireStoreDataRecived, setfireStoreDataRecived] = useState([]);
   const [VegData, setVegData] = useState([]);
@@ -30,7 +30,7 @@ const HomeScreen = () => {
   const [isRefresh, setisRefresh] = useState(false);
   const [SearchValueItem, setSearchValueItem] = useState('');
 
-  console.log('1', SearchValueItem);
+  // console.log('1', SearchValueItem);
   const RefreshingData = () => {
     setisRefresh(true);
     setTimeout(() => {
@@ -39,6 +39,7 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
+    // console.log('home screen navigation', {navigation});
     fetchData();
     // console.log('All data Recived', fireStoreDataRecived);
   }, [isRefresh]);
@@ -83,7 +84,7 @@ const HomeScreen = () => {
           onRefresh={() => RefreshingData()}
         />
       }>
-      <Header />
+      <Header navigation={{navigation}} />
       <View style={styles.searchBar}>
         <FontAwesome name="search" size={25} color="#ffb700" />
         <TextInput
@@ -121,9 +122,17 @@ const HomeScreen = () => {
       {/* <SearchfoodBar data={fireStoreDataRecived} value={SearchValueItem} /> */}
       <Categories />
       <OfferSlider />
-      <FoodCard title={`Today's Special`} data={fireStoreDataRecived} />
-      <FoodCard title={`NonVeg Dish`} data={NonVegData} />
-      <FoodCard title={`Veg Hunger`} data={VegData} />
+      <FoodCard
+        title={`Today's Special`}
+        data={fireStoreDataRecived}
+        navigation={navigation}
+      />
+      <FoodCard
+        title={`NonVeg Dish`}
+        data={NonVegData}
+        navigation={navigation}
+      />
+      <FoodCard title={`Veg Hunger`} data={VegData} navigation={navigation} />
     </ScrollView>
   );
 };

@@ -85,10 +85,16 @@ const styles = StyleSheet.create({
   },
   btntext: {color: '#fff', fontSize: 20},
   heading: {
-    color: '#ffb700',
+    // color: '#ffb700',   // yellow color
+    color: '#65d360', // green Color
     fontSize: 25,
     fontWeight: '900',
     // elevation: 30,
+    borderWidth: 1,
+    borderColor: '#65d360',
+    padding: 5,
+    borderRadius: 10,
+    paddingLeft: 10,
   },
   icon: {
     fontFamily: 'FontAwesome',

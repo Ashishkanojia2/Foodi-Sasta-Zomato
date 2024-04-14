@@ -1,4 +1,10 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import AntDesign from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -7,18 +13,19 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 const windowHeight = Dimensions.get('screen').height;
 const windowWidth = Dimensions.get('screen').width;
 
-const Header = () => {
+const Header = ({navigation}) => {
   return (
     <View style={styles.MainContainer}>
       {/* <MaterialIcons name="" size={40} style={styles.HomeFoodIcon} /> */}
       <Text style={styles.headerText}>Foodi</Text>
       <AntDesign name="food-variant" size={60} />
-      <FontAwesome
-        name="user-circle-o"
-        size={35}
+      <TouchableOpacity
         style={styles.HomeFoodIcon}
-        color="#000"
-      />
+        onPress={() => {
+          navigation.navigation.navigate('UserProfile');
+        }}>
+        <FontAwesome name="user-circle-o" size={37} color="#000" />
+      </TouchableOpacity>
     </View>
   );
 };

@@ -34,17 +34,8 @@ const Signup = ({navigation}) => {
     if (Userdata.email == '' || Userdata.password == '') {
       console.log('Blank Box Not allowed');
       setErrorMessage('Blank Box Not allowed');
-      // Alert.alert('Something Wents Wrong');
       return;
     }
-    // else if (CollectionData.password !== CollectionData.Cpassword) {
-    //   console.log("Password Doesn't match");
-    //   Alert.alert("Password Doesn't match");
-    //   return;
-    // } else if (CollectionData.phoneNo.length != 10) {
-    //   Alert.alert('Check Your Phone Number');
-    //   return;
-    // }
 
     try {
       auth()
