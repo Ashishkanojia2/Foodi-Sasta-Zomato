@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -24,7 +25,9 @@ const SingleFoodDetl = ({route}) => {
       />
 
       <View style={styles.detailContainer}>
-        <ScrollView style={{height: WindowHight}}>
+        <ScrollView
+          style={{height: WindowHight}}
+          showsVerticalScrollIndicator={false}>
           <View style={styles.NamePriceCont}>
             <Text style={styles.txt}>{FoodData.food_Name}</Text>
             <View style={styles.PriceCont}>
@@ -40,6 +43,113 @@ const SingleFoodDetl = ({route}) => {
               <Text style={styles.txtNonVeg}>Non-Veg</Text>
             )}
             <Text style={styles.desctxt}>{FoodData.food_description}</Text>
+            <Text style={styles.LocationHeading}> Restaurant Name :</Text>
+            <Text style={styles.Locationtxt}>{FoodData.restaurant_name}</Text>
+            <Text style={styles.LocationHeading}> Restaurant Location :</Text>
+            <Text style={styles.Locationtxt}>
+              {FoodData.restaurant_address_building}, {}
+              {FoodData.restaurant_address_street}, {}
+              {FoodData.restaurant_address_city}, {}
+              {FoodData.restaurant_address_pincode}
+            </Text>
+            <Text style={styles.AddItemHeading}>Add Extra Item</Text>
+            <Text style={[styles.Additemtxt, {marginTop: 10}]}>
+              {FoodData.food_addon}
+            </Text>
+            <View style={styles.addItem}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity style={styles.addItemCont}>
+                  <Text
+                    style={{fontSize: 25, color: '#000', fontWeight: '900'}}>
+                    -
+                  </Text>
+                </TouchableOpacity>
+                <TextInput
+                  style={{
+                    borderRadius: 5,
+                    borderColor: '#c9c9c9',
+                    borderWidth: 3,
+                    height: '10%',
+                    width: WindowHight / 20,
+                    marginHorizontal: 2,
+
+                    color: '#000',
+                    paddingTop: 3,
+                  }}
+                  keyboardType="decimal-pad"></TextInput>
+                <TouchableOpacity style={styles.addItemCont}>
+                  <Text style={{fontSize: 25, color: '#000'}}>+</Text>
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  marginLeft: '5%',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}>
+                <Text style={styles.Additemtxt}> X </Text>
+                <Text style={styles.Additemtxt}>
+                  {FoodData.foodAddon_price}
+                </Text>
+                <Text style={styles.Additemtxt}> = </Text>
+                <Text style={styles.Additemtxt}> total Price </Text>
+              </View>
+            </View>
+            <Text style={[styles.Additemtxt, {marginTop: 10}]}>
+              Increase Qty.
+            </Text>
+            <View style={styles.addItem}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity style={styles.addItemCont}>
+                  <Text
+                    style={{fontSize: 25, color: '#000', fontWeight: '900'}}>
+                    -
+                  </Text>
+                </TouchableOpacity>
+                <TextInput
+                  style={{
+                    borderRadius: 5,
+                    borderColor: '#c9c9c9',
+                    borderWidth: 3,
+                    height: '10%',
+                    width: WindowHight / 20,
+                    marginHorizontal: 2,
+                    color: '#000',
+                    paddingTop: 3,
+                  }}></TextInput>
+                <TouchableOpacity style={styles.addItemCont}>
+                  <Text style={{fontSize: 25, color: '#000'}}>+</Text>
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  marginLeft: '5%',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}>
+                <Text style={styles.Additemtxt}> X </Text>
+                <Text style={styles.Additemtxt}>{FoodData.food_Price}</Text>
+                <Text style={styles.Additemtxt}> = </Text>
+                <Text style={styles.Additemtxt}> total Price </Text>
+              </View>
+            </View>
+            {/*button Container*/}
+            <View style={styles.btnContainer}>
+              <TouchableOpacity style={styles.btn}>
+                <Text style={styles.btntxt}>Add to cart</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.btn}>
+                <Text style={styles.btntxt}>Buy Now</Text>
+              </TouchableOpacity>
+            </View>
             <View style={styles.btnContainer}>
               <TouchableOpacity style={styles.btn}>
                 <Text style={styles.btntxt}>Add to cart</Text>
@@ -62,8 +172,6 @@ const styles = StyleSheet.create({
     height: WindowHight / 3.5,
     width: WindowWidth,
     resizeMode: 'cover',
-    // borderTopRightRadius: ,
-    // borderTopLeftRadius: ,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     zIndex: 1,
@@ -71,33 +179,30 @@ const styles = StyleSheet.create({
   detailContainer: {
     height: WindowHight,
     width: WindowWidth,
-    // backgroundColor: '#bbd700',
-    // borderTopRightRadius: 20,
-    // borderTopLeftRadius: 20,
     position: 'absolute',
-    // top: 50,
-    // paddingTop: 50,
     paddingTop: '60%',
   },
   NamePriceCont: {
     flexDirection: 'row',
     padding: 10,
-    // backgroundColor: '#000',
     marginTop: '5%',
     justifyContent: 'space-between',
   },
   PriceCont: {
     flexDirection: 'row',
-    // padding: 10,
-    // backgroundColor: '#000',
-    // marginTop: '5%',
-    // justifyContent: 'center',
     alignItems: 'baseline',
     backgroundColor: '#FFB700',
     paddingHorizontal: 10,
     borderRadius: 5,
   },
-  txt: {color: '#4a4748', fontSize: 25},
+  addItemCont: {
+    flexDirection: 'row',
+    height: WindowHight / 25,
+    backgroundColor: '#FFB700',
+    paddingHorizontal: 30,
+    borderRadius: 5,
+  },
+  txt: {color: '#4a4748', fontSize: 25, fontWeight: '700'},
   txtPrice: {color: '#4a4748', fontSize: 22},
   txtVeg: {color: '#38ae2d', fontSize: 20, fontWeight: '700'},
   txtNonVeg: {color: '#eb3128', fontSize: 20, fontWeight: '700'},
@@ -106,13 +211,10 @@ const styles = StyleSheet.create({
   desctxt: {
     color: '#4a4748',
     fontSize: 17,
-    // borderColor: '#ffb700',
-    // borderWidth: 2,
   },
   btnContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    // backgroundColor: '#000',
     height: WindowHight / 13,
     alignItems: 'center',
     marginTop: '10%',
@@ -125,4 +227,34 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   btntxt: {color: '#4a4748', fontSize: 18},
+  LocationHeading: {
+    fontSize: 20,
+    color: '#4a4748',
+    marginTop: 10,
+    fontWeight: '500',
+    alignSelf: 'center',
+  },
+  Locationtxt: {
+    color: '#4a4748',
+    fontSize: 15,
+    alignSelf: 'center',
+    letterSpacing: 2,
+  },
+  AddItemHeading: {
+    fontSize: 20,
+    color: '#4a4748',
+    marginTop: 10,
+    fontWeight: '500',
+  },
+  Additemtxt: {
+    color: '#4a4748',
+    fontSize: 15,
+    letterSpacing: 2,
+  },
+  addItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: '2%',
+    marginBottom: '5%',
+  },
 });
