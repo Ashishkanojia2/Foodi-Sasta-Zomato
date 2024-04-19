@@ -18,6 +18,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import firestore from '@react-native-firebase/firestore';
 import FoodCard from './FoodCard';
 import SearchfoodBar from './SearchfoodBar';
+import BottomNav from './BottomNav';
 
 const windowHeight = Dimensions.get('screen').height;
 const windowWidth = Dimensions.get('screen').width;
@@ -72,68 +73,71 @@ const HomeScreen = ({navigation}) => {
     }
   }, [fireStoreDataRecived]);
 
-  // console.log('Ye raha Veg data ***********', VegData);
-  // console.log('Ye raha NonVeg data ########', NonVegData);
-
   return (
-    <ScrollView
-      style={{paddingBottom: 10}}
-      refreshControl={
-        <RefreshControl
-          refreshing={isRefresh}
-          onRefresh={() => RefreshingData()}
-        />
-      }>
+    <>
       <Header navigation={{navigation}} />
-      <View style={styles.searchBar}>
-        <FontAwesome name="search" size={25} color="#ffb700" />
-        <TextInput
-          placeholder="Search Food Here..."
-          style={styles.inputTxt}
-          onChangeText={SearchValue => {
-            setSearchValueItem(SearchValue);
-          }}
-        />
-      </View>
-      {SearchValueItem != '' && (
-        <View style={styles.searchresultArea}>
-          <FlatList
-            style={styles.searchResultInnner}
-            data={fireStoreDataRecived}
-            renderItem={({item}) => {
-              if (
-                item.food_Name
-                  .toLowerCase()
-                  .includes(SearchValueItem.toLocaleLowerCase())
-              ) {
-                return (
-                  <View>
-                    <Text
-                      style={{fontSize: 20, paddingLeft: 20, color: '#000'}}>
-                      -- {item.food_Name}
-                    </Text>
-                  </View>
-                );
-              }
+
+      <ScrollView
+        style={{paddingBottom: 10}}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefresh}
+            onRefresh={() => RefreshingData()}
+          />
+        }>
+        <View style={styles.searchBar}>
+          <FontAwesome name="search" size={25} color="#ffb700" />
+          <TextInput
+            placeholder="Search Food Here..."
+            style={styles.inputTxt}
+            onChangeText={SearchValue => {
+              setSearchValueItem(SearchValue);
             }}
           />
         </View>
-      )}
-      {/* <SearchfoodBar data={fireStoreDataRecived} value={SearchValueItem} /> */}
-      <Categories />
-      <OfferSlider />
-      <FoodCard
-        title={`Today's Special`}
-        data={fireStoreDataRecived}
-        navigation={navigation}
-      />
-      <FoodCard
-        title={`NonVeg Dish`}
-        data={NonVegData}
-        navigation={navigation}
-      />
-      <FoodCard title={`Veg Hunger`} data={VegData} navigation={navigation} />
-    </ScrollView>
+        {SearchValueItem != '' && (
+          <View style={styles.searchresultArea}>
+            <FlatList
+              style={styles.searchResultInnner}
+              data={fireStoreDataRecived}
+              renderItem={({item}) => {
+                if (
+                  item.food_Name
+                    .toLowerCase()
+                    .includes(SearchValueItem.toLocaleLowerCase())
+                ) {
+                  return (
+                    <View>
+                      <Text
+                        style={{fontSize: 20, paddingLeft: 20, color: '#000'}}>
+                        -- {item.food_Name}
+                      </Text>
+                    </View>
+                  );
+                }
+              }}
+            />
+          </View>
+        )}
+        {/* <SearchfoodBar data={fireStoreDataRecived} value={SearchValueItem} /> */}
+        <Categories />
+        <OfferSlider />
+        <FoodCard
+          title={`Today's Special`}
+          data={fireStoreDataRecived}
+          navigation={navigation}
+        />
+        <FoodCard
+          title={`NonVeg Dish`}
+          data={NonVegData}
+          navigation={navigation}
+        />
+        <FoodCard title={`Veg Hunger`} data={VegData} navigation={navigation} />
+      </ScrollView>
+      <View style={styles.bottomNav}>
+        <BottomNav navigation={navigation} />
+      </View>
+    </>
   );
 };
 
@@ -156,7 +160,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingLeft: 10,
     width: '90%',
-    color: '#000',
+    // color: '#000',
   },
   searchresultArea: {
     height: windowHeight / 5,
@@ -167,5 +171,10 @@ const styles = StyleSheet.create({
     height: '20%',
     width: windowWidth,
     // backgroundColor: 'gray',
+  },
+  bottomNav: {
+    height: windowHeight / 16,
+    width: windowWidth,
+    backgroundColor: '#FFB700',
   },
 });

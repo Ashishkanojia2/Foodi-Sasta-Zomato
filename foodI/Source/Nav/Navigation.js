@@ -9,6 +9,8 @@ import UserLogin from '../Screen/UserLogin';
 import UserProfile from '../Screen/UserProfile/UserProfile';
 import SingleFoodDetl from '../Screen/SingleFoodDetail/SingleFoodDetl';
 import FoodCard from '../Screen/HomeComponent/FoodCard';
+import BottomNav from '../Screen/HomeComponent/BottomNav';
+import Cart from '../Screen/Cartfolder/Cart';
 
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
@@ -24,6 +26,8 @@ const Navigation = () => {
         <Stack.Screen name="UserLogin" component={UserLogin} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
         <Stack.Screen name="SingleFoodDetl" component={SingleFoodDetl} />
+        <Stack.Screen name="BottomNav" component={BottomNav} />
+        <Stack.Screen name="Cart" component={Cart} />
         {/* <Stack.Screen name="FoodCard" component={FoodCard} /> */}
       </Stack.Navigator>
     </NavigationContainer>
