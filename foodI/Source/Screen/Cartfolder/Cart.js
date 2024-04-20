@@ -5,7 +5,6 @@ import SingleFoodCart from './SingleFoodCart';
 
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import {withSafeAreaInsets} from 'react-native-safe-area-context';
 
 const windowHeight = Dimensions.get('screen').height;
 const windowWidth = Dimensions.get('screen').width;
@@ -13,24 +12,14 @@ const windowWidth = Dimensions.get('screen').width;
 const Cart = ({navigation}) => {
   const [cartData, setcartData] = useState('');
   const [docData, setdocData] = useState(null);
-  const [actualprice, setactualprice] = useState('');
-  const [actualprice1, setactualprice1] = useState('');
-  const [addPrice, setaddPrice] = useState('');
-  const [addPrice1, setaddPrice1] = useState('');
-  const [totalCost, settotalCost] = useState('0');
-  const [havingData, sethavingData] = useState('');
 
   useEffect(() => {
     getDataCart();
-    // console.log('====================================');
-    // console.log('koii', {actualprice, actualprice1, addPrice, addPrice1});
-    // console.log('====================================');
   }, []);
 
   const getDataCart = () => {
     const dataref = firestore()
       .collection('UserCart')
-      //.doc is use to check send me this data who having this uid
       .doc(auth().currentUser.uid);
     dataref
       .get()
@@ -38,37 +27,27 @@ const Cart = ({navigation}) => {
         if (doc.exists) {
           setdocData(doc.data());
           const revicedcartdata = JSON.stringify(doc.data());
-          // JSON.parse(revicedcartdata).cart.map(item => {
-          //   item.FoodData.food_Name,
-          //     setactualprice(item.addFoodQuantity),
-          //     setaddPrice(item.addonQuantity),
-          //     setactualprice1(item.FoodData.food_Price),
-          //     setaddPrice1(item.FoodData.foodAddon_price);
-          // });
-          console.log('Data exists:', revicedcartdata);
-          // console.log(
-          //   'Data exists@@@2:',
-          //   JSON.parse(revicedcartdata).cart.map(
-          //     item => item.FoodData.food_Name,
-          //     // setactualprice(item.addFoodQuantity),
-          //     // setaddPrice(item.addonQuantity),
-          //     // setactualprice1(item.FoodData.food_Price),
-          //     // setaddPrice1(item.FoodData.foodAddon_price),
-          //   ),
-          // );
-          // Update state with cart data
+
+          // console.log('Data exists:', revicedcartdata);
+
           setcartData(revicedcartdata);
         } else {
           setcartData('Data Not found!');
-          console.log('this is ', cartData);
-          // console.log('Data not found!');
-          // sethavingData('Data No Found');
+          // console.log('this is ', cartData);
         }
       })
       .catch(error => {
         console.log('Error getting document:', error);
       });
   };
+
+  const refreshCartData = () => {
+    getDataCart(); // Refresh the docData
+  };
+
+  // console.log('================2====================');
+  // console.log(cartData);
+  // console.log('====================================');
 
   return (
     <View style={{flex: 1}}>
@@ -80,22 +59,16 @@ const Cart = ({navigation}) => {
         <View
           style={{backgroundColor: 'pink', flex: 0.934, paddingBottom: '13%'}}>
           <ScrollView>
-            <SingleFoodCart navigation={navigation} docData={docData} />
-            {/* <SingleFoodCart navigation={navigation} />
-            <SingleFoodCart navigation={navigation} />
-            <SingleFoodCart navigation={navigation} />
-            <SingleFoodCart navigation={navigation} />
-            <SingleFoodCart navigation={navigation} />
-            <SingleFoodCart navigation={navigation} />
-            <SingleFoodCart navigation={navigation} />
-            <SingleFoodCart navigation={navigation} /> */}
+            <SingleFoodCart
+              navigation={navigation}
+              docData={docData}
+              onRefresh={refreshCartData}
+            />
           </ScrollView>
           <View style={styles.totalPriceContainer}>
-            {/* <BottomNav navigation={navigation} /> */}
             <Text style={styles.totalPriceTxt}>Total Price </Text>
             <Text style={styles.totalPriceTxt}> ₹ 10000/-</Text>
           </View>
-          {/* //// */}
         </View>
       ) : (
         <View>

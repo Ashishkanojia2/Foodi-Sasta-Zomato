@@ -4,29 +4,36 @@ import {
   Image,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import firestore from '@react-native-firebase/firestore';
+import auth, {firebase} from '@react-native-firebase/auth';
 
 const windowHeight = Dimensions.get('screen').height;
 const windowWidth = Dimensions.get('screen').width;
 
-const SingleFoodCart = ({navigation, docData}) => {
-  console.log('====================================');
-  console.log('this is i want ', docData);
+const SingleFoodCart = ({navigation, docData, onRefresh}) => {
+  // console.log('====================================');
+  // console.log('this is i want ', docData);
+  // console.log('====================================');
 
-  // const name = JSON.parse(data).cart
-  // console.log("this is what i'm saying", docData.);
+  const deleteFun = item => {
+    const docRef = firestore()
+      .collection('UserCart')
+      .doc(firebase.auth().currentUser.uid);
+    docRef.update({cart: firestore.FieldValue.arrayRemove(item)}).then(() => {
+      onRefresh();
+    });
+  };
 
-  console.log('====================================');
   return (
     <View>
-      {/* <Text>SingleFoodCart</Text> */}
       <FlatList
         data={docData?.cart || []}
         renderItem={({item}) => (
-          // <Text>{item.FoodData.food_Name}</Text>
           <View style={styles.MainContainer}>
             <View style={styles.HoriContainer}>
               <Text
@@ -71,20 +78,25 @@ const SingleFoodCart = ({navigation, docData}) => {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                   }}>
-                  <Text style={styles.foodItem}>Extra Gravy</Text>
+                  <Text style={styles.foodItem}>
+                    {item.FoodData.food_addon}
+                  </Text>
                   <Text style={styles.foodItem}>
                     {item.FoodData.foodAddon_price}
                   </Text>
                 </View>
                 <Text style={styles.foodItem}>Qty : {item.AddonQuantity}</Text>
-                <View style={styles.iconContainer}>
-                  {/* <Text>Remove your Food</Text> */}
+                <TouchableOpacity
+                  style={styles.iconContainer}
+                  onPress={() => {
+                    deleteFun(item);
+                  }}>
                   <MaterialCommunityIcons
                     name="delete"
                     size={25}
                     style={styles.Icone}
                   />
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
