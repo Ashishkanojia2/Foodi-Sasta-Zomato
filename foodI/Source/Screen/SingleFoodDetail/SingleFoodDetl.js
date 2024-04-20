@@ -55,9 +55,7 @@ const SingleFoodDetl = ({route}) => {
   useEffect(() => {
     updateTotalQty();
   }, [foodQty, addonQty]);
-  // setfirstPrice(
-  //   (parseInt(FoodData.foodAddon_price) * parseInt(addonQty)).toString(),
-  // );
+
   const addtocartfun = () => {
     console.log('addtocart', foodQty, addonQty);
 
@@ -69,7 +67,6 @@ const SingleFoodDetl = ({route}) => {
       AddFoodQuantity: foodQty,
       AddonQuantity: addonQty,
     };
-    // console.log(whatDatasend);
     colRef.get().then(dataRecived => {
       if (dataRecived.exists) {
         colRef.update({cart: firestore.FieldValue.arrayUnion(whatDatasend)});

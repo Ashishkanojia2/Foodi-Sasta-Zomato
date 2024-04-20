@@ -85,7 +85,9 @@ const SingleFoodCart = ({navigation, docData, onRefresh}) => {
                     {item.FoodData.foodAddon_price}
                   </Text>
                 </View>
-                <Text style={styles.foodItem}>Qty : {item.AddonQuantity}</Text>
+                <Text style={styles.foodItem}>
+                  Extra Qty : {item.AddonQuantity}
+                </Text>
                 <TouchableOpacity
                   style={styles.iconContainer}
                   onPress={() => {

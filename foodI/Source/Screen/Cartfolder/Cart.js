@@ -12,6 +12,7 @@ import SingleFoodCart from './SingleFoodCart';
 
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import PlaceOrder from '../PlaceOrder/PlaceOrder';
 
 const windowHeight = Dimensions.get('screen').height;
 const windowWidth = Dimensions.get('screen').width;
@@ -36,8 +37,11 @@ const Cart = ({navigation}) => {
           setdocData(doc.data());
           const revicedcartdata = JSON.stringify(doc.data());
           setcartData(revicedcartdata);
+          // console.log('====================================');
+          // console.log(revicedcartdata);
+          // console.log('====================================');
         } else {
-          setcartData('Data Not found!');
+          setcartData('0');
         }
       })
       .catch(error => {
@@ -70,13 +74,17 @@ const Cart = ({navigation}) => {
     }
   }, [cartData]);
 
+  const addtocartfun = () => {
+    navigation.navigate('HomeScreen');
+  };
+
   return (
     <View style={{flex: 1}}>
       <View style={styles.HeadingContainer}>
         <Text style={styles.Heading}>Food Cart</Text>
       </View>
 
-      {cartData !== 'Data Not found!' ? (
+      {cartData && JSON.parse(cartData).cart.length !== 0 ? (
         <View style={{flex: 0.934, paddingBottom: '13%'}}>
           <ScrollView>
             <SingleFoodCart
@@ -85,17 +93,43 @@ const Cart = ({navigation}) => {
               onRefresh={refreshCartData}
             />
           </ScrollView>
+
           <View style={styles.totalPriceContainer}>
             <Text style={styles.totalPriceTxt}>You have to Pay</Text>
             <Text style={styles.totalPriceAmount}> ₹{TotalFoodPrice}/-</Text>
-            <TouchableOpacity style={styles.payBtn}>
+            <TouchableOpacity
+              style={styles.payBtn}
+              onPress={() => {
+                navigation.navigate('PlaceOrder', {docData});
+              }}>
               <Text style={styles.payBtntxt}>Place Order</Text>
             </TouchableOpacity>
           </View>
         </View>
       ) : (
-        <View>
-          <Text>No Data found</Text>
+        <View
+          style={{
+            alignItems: 'center',
+            backgroundColor: '#fff',
+            borderRadius: 10,
+            margin: 20,
+            height: windowHeight / 2,
+            justifyContent: 'center',
+            // alignSelf: 'center',
+            elevation: 10,
+          }}>
+          <Text style={{color: '#000', fontSize: 20}}>
+            No Data found.. Add food
+          </Text>
+          <View style={styles.btnContainer}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => {
+                addtocartfun();
+              }}>
+              <Text style={styles.btntxt}>Add to Cart</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
 
@@ -145,4 +179,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#ffb700',
   },
+  btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    height: windowHeight / 13,
+    alignItems: 'center',
+    marginTop: '10%',
+  },
+  btn: {
+    backgroundColor: '#ffb700',
+    paddingHorizontal: 20,
+    height: '70%',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  btntxt: {color: '#4a4748', fontSize: 18},
 });
