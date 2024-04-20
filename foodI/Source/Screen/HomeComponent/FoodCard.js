@@ -69,7 +69,7 @@ const FoodCard = ({title, data, navigation}) => {
               )}
             </View>
             <View style={styles.BuyBtn}>
-              <Text style={styles.btnTxt}>Buy</Text>
+              <Text style={styles.btnTxt}>Add to Cart</Text>
             </View>
           </View>
         )}

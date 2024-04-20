@@ -89,6 +89,7 @@ const HomeScreen = ({navigation}) => {
           <FontAwesome name="search" size={25} color="#ffb700" />
           <TextInput
             placeholder="Search Food Here..."
+            placeholderTextColor={'#c9c9c9'}
             style={styles.inputTxt}
             onChangeText={SearchValue => {
               setSearchValueItem(SearchValue);
@@ -160,6 +161,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingLeft: 10,
     width: '90%',
+    // color: '#000',
     // color: '#000',
   },
   searchresultArea: {

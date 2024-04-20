@@ -13,6 +13,7 @@ import React, {useEffect, useState} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import Navigation from '../../Nav/Navigation';
 
 const WindowHight = Dimensions.get('screen').height;
 const WindowWidth = Dimensions.get('screen').width;
@@ -77,7 +78,8 @@ const SingleFoodDetl = ({route}) => {
         colRef.set({
           cart: [whatDatasend],
         });
-        Alert.alert('Food is Add on Cart');
+        Alert.alert('Food is Added on Cart');
+        navigation.navigate('HomeScreen');
       }
     });
   };
@@ -296,11 +298,11 @@ const SingleFoodDetl = ({route}) => {
                 onPress={() => {
                   addtocartfun();
                 }}>
-                <Text style={styles.btntxt}>Add to cart</Text>
+                <Text style={styles.btntxt}>Add to Cart</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btn}>
+              {/* <TouchableOpacity style={styles.btn}>
                 <Text style={styles.btntxt}>Buy Now</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </ScrollView>

@@ -112,11 +112,12 @@ const styles = StyleSheet.create({
   MainContainer: {
     height: windowHeight / 7,
     width: windowWidth - 20,
-    borderWidth: 2,
+    borderWidth: 1,
     // borderColor: 'green',
     borderRadius: 10,
     alignSelf: 'center',
     marginVertical: 10,
+    elevation: 10,
   },
   HoriContainer: {
     backgroundColor: '#fff',

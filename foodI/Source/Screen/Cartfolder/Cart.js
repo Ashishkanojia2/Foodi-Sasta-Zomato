@@ -1,4 +1,11 @@
-import {Dimensions, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import BottomNav from '../HomeComponent/BottomNav';
 import SingleFoodCart from './SingleFoodCart';
@@ -12,6 +19,7 @@ const windowWidth = Dimensions.get('screen').width;
 const Cart = ({navigation}) => {
   const [cartData, setcartData] = useState('');
   const [docData, setdocData] = useState(null);
+  const [TotalFoodPrice, setTotalFoodPrice] = useState('');
 
   useEffect(() => {
     getDataCart();
@@ -27,13 +35,9 @@ const Cart = ({navigation}) => {
         if (doc.exists) {
           setdocData(doc.data());
           const revicedcartdata = JSON.stringify(doc.data());
-
-          // console.log('Data exists:', revicedcartdata);
-
           setcartData(revicedcartdata);
         } else {
           setcartData('Data Not found!');
-          // console.log('this is ', cartData);
         }
       })
       .catch(error => {
@@ -45,9 +49,26 @@ const Cart = ({navigation}) => {
     getDataCart(); // Refresh the docData
   };
 
-  // console.log('================2====================');
-  // console.log(cartData);
-  // console.log('====================================');
+  useEffect(() => {
+    let FoodPrice = 0;
+    if (cartData != '') {
+      const food = JSON.parse(cartData).cart;
+      // console.log('ye Food Ki CalCulatio ke Leye hai', food);
+      food.map(item => {
+        const addonPrice =
+          item.FoodData.foodAddon_price === ''
+            ? 0
+            : parseInt(item.FoodData.foodAddon_price);
+
+        FoodPrice =
+          parseInt(item.FoodData.food_Price) * parseInt(item.AddFoodQuantity) +
+          parseInt(addonPrice) * parseInt(item.AddonQuantity) +
+          FoodPrice;
+      });
+      setTotalFoodPrice(FoodPrice);
+      // console.log('ye kya aa gaya', FoodPrice);
+    }
+  }, [cartData]);
 
   return (
     <View style={{flex: 1}}>
@@ -56,8 +77,7 @@ const Cart = ({navigation}) => {
       </View>
 
       {cartData !== 'Data Not found!' ? (
-        <View
-          style={{backgroundColor: 'pink', flex: 0.934, paddingBottom: '13%'}}>
+        <View style={{flex: 0.934, paddingBottom: '13%'}}>
           <ScrollView>
             <SingleFoodCart
               navigation={navigation}
@@ -66,8 +86,11 @@ const Cart = ({navigation}) => {
             />
           </ScrollView>
           <View style={styles.totalPriceContainer}>
-            <Text style={styles.totalPriceTxt}>Total Price </Text>
-            <Text style={styles.totalPriceTxt}> ₹ 10000/-</Text>
+            <Text style={styles.totalPriceTxt}>You have to Pay</Text>
+            <Text style={styles.totalPriceAmount}> ₹{TotalFoodPrice}/-</Text>
+            <TouchableOpacity style={styles.payBtn}>
+              <Text style={styles.payBtntxt}>Place Order</Text>
+            </TouchableOpacity>
           </View>
         </View>
       ) : (
@@ -96,7 +119,8 @@ const styles = StyleSheet.create({
   totalPriceContainer: {
     height: windowHeight / 16,
     width: windowWidth,
-    backgroundColor: '#FFB700',
+    // backgroundColor: '#FFB700',
+    backgroundColor: 'green',
     position: 'absolute',
     bottom: '1.2%',
     flexDirection: 'row',
@@ -108,5 +132,17 @@ const styles = StyleSheet.create({
   },
   Heading: {color: '#ffb700', fontSize: 40, fontWeight: '700'},
   HeadingContainer: {alignItems: 'center', backgroundColor: 'green'},
-  totalPriceTxt: {fontSize: 30, color: 'green', fontWeight: 'bold'},
+  totalPriceTxt: {fontSize: 20, color: '#FFB700', fontWeight: '500'},
+  totalPriceAmount: {fontSize: 25, color: '#FFB700', fontWeight: '500'},
+  payBtn: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ffb700',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  payBtntxt: {
+    fontSize: 14,
+    color: '#ffb700',
+  },
 });
