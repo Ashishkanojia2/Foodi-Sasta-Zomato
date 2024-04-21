@@ -267,7 +267,7 @@ const PlaceOrder = ({route}) => {
             |
           </Text>
           <TouchableOpacity>
-            <Text style={styles.btnTxt}>Place Order</Text>
+            <Text style={styles.btnTxt}>Proceed to Payment</Text>
           </TouchableOpacity>
         </View>
       </View>

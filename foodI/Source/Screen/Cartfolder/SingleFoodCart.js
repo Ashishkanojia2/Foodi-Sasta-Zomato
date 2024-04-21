@@ -45,7 +45,15 @@ const SingleFoodCart = ({navigation, docData, onRefresh}) => {
                   paddingHorizontal: 5,
                   color: 'green',
                 }}>
-                Total Price : 1000
+                Total Price :
+                {parseInt(item.FoodData.food_Price) *
+                  parseInt(item.AddFoodQuantity) +
+                  parseInt(
+                    item.FoodData.foodAddon_price === ''
+                      ? 0
+                      : parseInt(item.FoodData.foodAddon_price),
+                  ) *
+                    parseInt(item.AddonQuantity)}
               </Text>
               <View style={styles.VertiContainer}>
                 <Image
