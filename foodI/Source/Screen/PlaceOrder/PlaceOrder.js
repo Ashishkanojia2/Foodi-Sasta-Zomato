@@ -80,6 +80,52 @@ const PlaceOrder = ({route}) => {
     }
   }, [route.params.docData.cart]);
 
+  // user ditals ---------------------------------------------------------------------------------------------
+  const [uesrProfileData, setuesrProfileData] = useState('');
+  const [recivedData, setrecivedData] = useState('');
+
+  useEffect(() => {
+    auth().onAuthStateChanged(data => {
+      if (data) {
+        console.log('ID mil gaya', data.uid);
+        setuesrProfileData(data.uid);
+      } else {
+        console.log('data nhi mili UserProfile me');
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    getuserData();
+  }, [uesrProfileData]);
+
+  //
+  //
+  const getuserData = async () => {
+    try {
+      const querySnapshot = await firestore()
+        .collection('UserData')
+        .where('Uid', '==', uesrProfileData)
+        .get();
+
+      if (querySnapshot.empty) {
+        console.log('No matching documents');
+        return;
+      }
+
+      querySnapshot.forEach(doc => {
+        const userData = doc.data(); // Access the data of the document
+        // console.log('User ka Pura Data', userData);
+        setrecivedData(userData);
+      });
+    } catch (error) {
+      console.error('Error getting user data:', error);
+    }
+  };
+  console.log('====================================');
+  console.log('ye vala', recivedData);
+  console.log('====================================');
+
   return (
     <View style={styles.screenCont}>
       <View style={styles.TopCont}>
@@ -159,7 +205,7 @@ const PlaceOrder = ({route}) => {
                         <Text style={styles.foodItem}>
                           Extra Qty : {item.AddonQuantity}
                         </Text>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                           style={styles.iconContainer}
                           // onPress={() => {
                           //   deleteFun(item);
@@ -170,7 +216,7 @@ const PlaceOrder = ({route}) => {
                             size={25}
                             style={styles.Icone}
                           />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                       </View>
                     </View>
                   </View>
@@ -183,20 +229,20 @@ const PlaceOrder = ({route}) => {
           {/* <Text style={styles.}> Your Order Summery</Text> */}
           <Text style={styles.AddressHeading}>Your details</Text>
           <View style={styles.detailRow}>
-            <Text style={styles.addressDetail}>Name</Text>
-            <Text style={styles.addressDetail}>Ashish Kanojia</Text>
+            <Text style={styles.addressDetailHead}>Name</Text>
+            <Text style={styles.addressDetail}>{recivedData.fullName}</Text>
           </View>
           <View style={styles.detailRow}>
-            <Text style={styles.addressDetail}>Email</Text>
-            <Text style={styles.addressDetail}>Ashish Kanojia</Text>
+            <Text style={styles.addressDetailHead}>Email</Text>
+            <Text style={styles.addressDetail}>{recivedData.emailId}</Text>
           </View>
           <View style={styles.detailRow}>
-            <Text style={styles.addressDetail}>Phone No.</Text>
-            <Text style={styles.addressDetail}>Ashish Kanojia</Text>
+            <Text style={styles.addressDetailHead}>Phone No.</Text>
+            <Text style={styles.addressDetail}>{recivedData.phoneNo}</Text>
           </View>
           <View style={styles.detailRow}>
-            <Text style={styles.addressDetail}>Address</Text>
-            <Text style={styles.addressDetail}>Ashish Kanojia</Text>
+            <Text style={styles.addressDetailHead}>Address</Text>
+            <Text style={styles.addressDetail}>{recivedData.address}</Text>
           </View>
         </View>
         <View style={styles.OrderBtnCont}>
@@ -338,6 +384,7 @@ const styles = StyleSheet.create({
   },
   AddressHeading: {color: 'green', alignSelf: 'center', fontSize: 18},
   addressDetail: {color: '#000', fontSize: 15},
+  addressDetailHead: {color: '#000', fontSize: 15, fontWeight: 'bold'},
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
