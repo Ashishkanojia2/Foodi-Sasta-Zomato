@@ -1,26 +1,84 @@
 import {
   Dimensions,
+  FlatList,
+  Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const windowHeight = Dimensions.get('screen').height;
 const windowWidth = Dimensions.get('screen').width;
 
 const PlaceOrder = ({route}) => {
-  const [data, setdata] = useState(null);
+  const [data, setdata] = useState('');
+  const [TotalFoodPrice, setTotalFoodPrice] = useState('');
+  const [SingleFoodPrice, setSingleFoodPrice] = useState(0);
+  // const [zeroPrice, setzeroPrice] = useState('');
 
-  const dataRecived = route.params.docData.cart;
+  // const dataRecived = route.params.docData.cart;
+  // setdata(dataRecived);
   // setdata(dataRecived);
 
-  console.log('====================================');
-  console.log(dataRecived);
-  console.log('====================================');
+  // console.log('====================================');
+  // console.log(dataRecived);
+
+  // console.log('====================================');
+
+  // useEffect(() => {
+  //   const docRef = firestore()
+  //     .collection('UserData')
+  //     .doc(auth().currentUser.uid);
+  //   docRef
+  //     .get()
+  //     .then(doc => {
+  //       console.log('Document data:', doc.data());
+  //       if (doc.exists) {
+  //         console.log('userData', doc.data());
+  //       } else {
+  //         console.log("Data Doesn't exist");
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.log(
+  //         'Error retrieving user data from PlaceOrderPage:',
+  //         error.message,
+  //       );
+  //     });
+  // }, []);
+  useEffect(() => {
+    const dataRecived = route.params.docData.cart;
+    setdata(dataRecived);
+    console.log('====================================');
+    console.log(dataRecived);
+    console.log('====================================');
+
+    let FoodPrice = 0;
+    if (dataRecived !== '') {
+      dataRecived.map(item => {
+        const addonPrice =
+          item.FoodData.foodAddon_price === ''
+            ? 0
+            : parseInt(item.FoodData.foodAddon_price);
+        // setzeroPrice(addonPrice);
+        FoodPrice =
+          parseInt(item.FoodData.food_Price) * parseInt(item.AddFoodQuantity) +
+          parseInt(addonPrice) * parseInt(item.AddonQuantity) +
+          FoodPrice;
+        setSingleFoodPrice(FoodPrice);
+        console.log('first check ', FoodPrice);
+      });
+      setTotalFoodPrice(FoodPrice);
+      console.log('ye raha ', FoodPrice);
+    }
+  }, [route.params.docData.cart]);
 
   return (
     <View style={styles.screenCont}>
@@ -30,65 +88,96 @@ const PlaceOrder = ({route}) => {
       <View style={styles.MainCont}>
         <View style={styles.OrderCont}>
           {/* <Text style={styles.}> Your Order Summery</Text> */}
-          <View style={styles.MainContainer}>
-            <View style={styles.HoriContainer}>
-              <Text
-                style={{
-                  position: 'absolute',
-                  bottom: 8,
-                  fontSize: 17,
-                  fontWeight: '600',
-                  paddingHorizontal: 5,
-                  color: 'green',
-                }}>
-                Total Price : 1000
-              </Text>
-              <View style={styles.VertiContainer}>
-                {/* <Image
-                  source={{uri: item.FoodData.food_imageUrl}}
-                  style={{
-                    height: windowHeight / 8,
-                    width: '100%',
-                    resizeMode: 'stretch',
-                  }}
-                /> */}
-                <Text style={{fontSize: 20}}>Image</Text>
-              </View>
-              <View style={styles.VertiContainer2}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <Text style={styles.foodItem}>Price</Text>
-                  <Text style={styles.foodItem}>Price</Text>
-                </View>
+          <FlatList
+            data={data}
+            renderItem={({item}) => {
+              return (
+                <ScrollView>
+                  <View style={styles.MainContainer}>
+                    <View style={styles.HoriContainer}>
+                      <Text
+                        style={{
+                          position: 'absolute',
+                          bottom: 8,
+                          fontSize: 17,
+                          fontWeight: '600',
+                          paddingHorizontal: 5,
+                          color: 'green',
+                        }}>
+                        Total Price :
+                        {parseInt(item.FoodData.food_Price) *
+                          parseInt(item.AddFoodQuantity) +
+                          parseInt(
+                            item.FoodData.foodAddon_price === ''
+                              ? 0
+                              : parseInt(item.FoodData.foodAddon_price),
+                          ) *
+                            parseInt(item.AddonQuantity)}
+                      </Text>
+                      <View style={styles.VertiContainer}>
+                        <Image
+                          source={{uri: item.FoodData.food_imageUrl}}
+                          style={{
+                            height: windowHeight / 8,
+                            width: '100%',
+                            resizeMode: 'stretch',
+                          }}
+                        />
+                        {/* <Text style={{fontSize: 20, color: '#000'}}>
+                        {item.FoodData.food_Name}
+                      </Text> */}
+                      </View>
+                      <View style={styles.VertiContainer2}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                          }}>
+                          <Text style={styles.foodItem}>
+                            {item.FoodData.food_Name}
+                          </Text>
+                          <Text style={styles.foodItem}>
+                            {item.FoodData.food_Price}
+                          </Text>
+                        </View>
 
-                <Text style={styles.foodItem}>Price</Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <Text style={styles.foodItem}>Price</Text>
-                  <Text style={styles.foodItem}>Price</Text>
-                </View>
-                <Text style={styles.foodItem}>Extra Qty :</Text>
-                <TouchableOpacity
-                  style={styles.iconContainer}
-                  // onPress={() => {
-                  //   deleteFun(item);
-                  // }}
-                >
-                  <MaterialCommunityIcons
-                    name="delete"
-                    size={25}
-                    style={styles.Icone}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
+                        <Text style={styles.foodItem}>
+                          Qty : {item.AddFoodQuantity}
+                        </Text>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                          }}>
+                          <Text style={styles.foodItem}>
+                            {item.FoodData.food_addon}
+                          </Text>
+                          <Text style={styles.foodItem}>
+                            {item.FoodData.foodAddon_price}
+                          </Text>
+                        </View>
+                        <Text style={styles.foodItem}>
+                          Extra Qty : {item.AddonQuantity}
+                        </Text>
+                        <TouchableOpacity
+                          style={styles.iconContainer}
+                          // onPress={() => {
+                          //   deleteFun(item);
+                          // }}
+                        >
+                          <MaterialCommunityIcons
+                            name="delete"
+                            size={25}
+                            style={styles.Icone}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+                </ScrollView>
+              );
+            }}
+          />
         </View>
         <View style={styles.addressCont}>
           {/* <Text style={styles.}> Your Order Summery</Text> */}
@@ -112,8 +201,27 @@ const PlaceOrder = ({route}) => {
         </View>
         <View style={styles.OrderBtnCont}>
           {/* <Text style={styles.}> Your Order Summery</Text> */}
+          {/* <View><</View> */}
+          <Text
+            style={{
+              color: '#fff',
+              marginRight: '10%',
+              fontSize: 18,
+              fontWeight: '700',
+            }}>
+            ₹ {TotalFoodPrice}
+          </Text>
+          <Text
+            style={{
+              color: '#fff',
+              marginRight: '10%',
+              fontSize: 25,
+              fontWeight: '900',
+            }}>
+            |
+          </Text>
           <TouchableOpacity>
-            <Text style={styles.btnTxt}>Placeorder</Text>
+            <Text style={styles.btnTxt}>Place Order</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -167,14 +275,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     paddingHorizontal: 40,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     // marginBottom: 20,
     borderRadius: 10,
+    flexDirection: 'row',
     elevation: 10,
   },
   btnTxt: {color: '#ffb700', fontSize: 18, fontWeight: '800', letterSpacing: 2},
   MainContainer: {
-    height: '30%',
+    height: '90%',
     width: '98%',
     borderWidth: 1,
     // borderColor: 'green',
@@ -213,7 +322,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
   },
-  foodItem: {fontSize: 17, fontWeight: '600', color: '#000'},
+  foodItem: {fontSize: 14, fontWeight: '600', color: '#000'},
   Icone: {
     fontWeight: '600',
     color: '#ffb700',
