@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -125,6 +126,28 @@ const PlaceOrder = ({route}) => {
   console.log('====================================');
   console.log('ye vala', recivedData);
   console.log('====================================');
+
+  const PlaceNow = () => {
+    const docRef = firestore()
+      .collection('UserOrders')
+      .doc(new Date().getTime().toString());
+    docRef
+      .set({
+        orderid: docRef.id,
+        orderData: data,
+        orderStatus: 'Pending',
+        orderCost: TotalFoodPrice,
+        orderDate: firestore.FieldValue.serverTimestamp(),
+        orderAddress: recivedData.address,
+        orderphone: recivedData.phoneNo,
+        orderUserId: uesrProfileData,
+        orderPayment: 'online UPI',
+        paymentStatus: 'Paid',
+      })
+      .then(() => {
+        Alert.alert('Order Placed');
+      });
+  };
 
   return (
     <View style={styles.screenCont}>
@@ -266,7 +289,10 @@ const PlaceOrder = ({route}) => {
             }}>
             |
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              PlaceNow();
+            }}>
             <Text style={styles.btnTxt}>Proceed to Payment</Text>
           </TouchableOpacity>
         </View>
