@@ -37,7 +37,7 @@ const BottomNav = ({navigation}) => {
         size={30}
         style={styles.Icone}
         onPress={() => {
-          navigation.navigate('UserProfile');
+          navigation.navigate('TrackOrder');
         }}
       />
     </View>

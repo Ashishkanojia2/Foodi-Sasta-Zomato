@@ -12,6 +12,7 @@ import FoodCard from '../Screen/HomeComponent/FoodCard';
 import BottomNav from '../Screen/HomeComponent/BottomNav';
 import Cart from '../Screen/Cartfolder/Cart';
 import PlaceOrder from '../Screen/PlaceOrder/PlaceOrder';
+import TrackOrder from '../Screen/TrackOrder/TrackOrder';
 
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
@@ -30,6 +31,7 @@ const Navigation = () => {
         <Stack.Screen name="BottomNav" component={BottomNav} />
         <Stack.Screen name="Cart" component={Cart} />
         <Stack.Screen name="PlaceOrder" component={PlaceOrder} />
+        <Stack.Screen name="TrackOrder" component={TrackOrder} />
         {/* <Stack.Screen name="FoodCard" component={FoodCard} /> */}
       </Stack.Navigator>
     </NavigationContainer>

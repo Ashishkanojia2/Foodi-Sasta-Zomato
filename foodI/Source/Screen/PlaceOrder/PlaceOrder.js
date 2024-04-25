@@ -143,6 +143,7 @@ const PlaceOrder = ({route}) => {
         orderUserId: uesrProfileData,
         orderPayment: 'online UPI',
         paymentStatus: 'Paid',
+        ordername: recivedData.fullName,
       })
       .then(() => {
         Alert.alert('Order Placed');
